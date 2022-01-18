@@ -1,0 +1,31 @@
+html ,body , #app {
+    margin: 0px;
+    padding: 0px;
+    width: 100%;
+}
+.el-menu.el-menu--horizontal {
+    border-bottom: solid 0px #e6e6e6;
+}
+
+.bottomColor {
+    border-bottom: 5px solid #df5000;
+}
+/*头部通用区*/
+.home_header {
+    height: 40px;
+    background-color: #0086b3;
+    margin: 0px;
+}
+.el-menu-demo {
+    background-color: #333333;
+    height: 40px;
+}
+.logo_header {
+    height: 100px;
+    width: 100%;
+    background: #55a532;
+}
+.footer {
+    height: 300px;
+    background-color: #0086b3;
+}
