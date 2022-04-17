@@ -1,20 +1,22 @@
 <template>
   <div>
-    <li class="li_list">
-      <span class="text" @mouseover="showHeader(catetitle)" @mouseout="noShowHeader">{{catetitle}}</span>
-      <div v-if="catetitle != '服务' && catetitle !='社区'" v-show="displayHeader" class="catelist_down">
-        <div class="catelist_center">
-          <ul>
-            <li v-for="(item, index) in piclist" :key="index" class="li_pic">
-              <a href="">
-                <img class="pic_img":src="item.pic_url" alt="">
-                <p class="span_pic_name">{{item.pic_name}}</p>
-                <p class="span_pic_price">{{item.pic_price+'元起'}}</p>
-              </a>
-            </li>
-          </ul>
+    <li class="li_list" @mouseenter="showHeader(catetitle)" @mouseleave="noShowHeader">
+      <span class="text" >{{catetitle}}</span>
+        <div v-if="catetitle != '服务' && catetitle !='社区'" v-show="displayHeader" class="catelist_down" >
+          <div class="catelist_center">
+            <ul>
+              <li v-for="(item, index) in piclist" :key="index" class="li_pic">
+                <router-link :to="{path: `/buy/detail`, query: {product_id: item.product_id}}">
+                  <a href="#">
+                    <img class="pic_img" :src="item.pic_url" alt="">
+                    <p class="span_pic_name">{{item.pic_name}}</p>
+                    <p class="span_pic_price">{{item.pic_price+'元起'}}</p>
+                  </a>
+                </router-link>
+              </li>
+            </ul>
+          </div>
         </div>
-      </div>
     </li>
   </div>
 </template>
@@ -22,7 +24,7 @@
 <script>
 export default {
   props: {
-    catetitle: String
+    catetitle: String,
   },
   data() {
     return {
@@ -32,35 +34,34 @@ export default {
     }
   },
   methods: {
-
     showHeader(cateTitle){
       this.pic = cateTitle
       this.displayHeader = true
       this.getPicList()
-
+    },
+    noShowHeader() {
+      this.piclist
+      this.displayHeader = false
     },
     async getPicList(){
+      this.piclist = []
       const {data: res} = await this.$http.get( `/header/piclist/${this.pic}`);
       if(res.status !== 200){
         this.$message.error('获取导航栏标题失败')
       }
-      console.log(res)
       this.piclist = res.data
-    },
-    noShowHeader() {
-      this.displayHeader = false
+      console.log(this.piclist)
     }
   }
 }
 </script>
-
 <style lang="less" scoped>
 .text&:hover {
   color: #ff6700;
 }
 .li_list {
   list-style-type: none;
-  padding: 34px 10px;
+  padding: 26px 9px 38px;
   float: left;
   display: block;
 }
@@ -68,10 +69,12 @@ export default {
   font-size: 16px;
 }
 .catelist_down {
+  background-color: #ffffff;
   width: 100%;
   height: 230px;
   position: absolute;
-  top: 140px;
+  z-index: 10;
+  top: 130px;
   border-top: 1px solid #e5e5e5;
   left: 0;
   box-shadow: 0px 7px 6px -5px rgba(0, 0, 0, 0.11);
@@ -82,19 +85,40 @@ export default {
   background-color: #999999;
 }
 .li_pic {
+  position: relative;
   width: 166px;
   height: 180px;
   list-style-type: none;
   float: left;
-  padding: 35px 0 0 12px;
+  padding: 35px 12px 0 12px;
+}
+.li_pic::after {
+  position: absolute;
+  left: 0;
+  top: 35px;
+  z-index: 1;
+  width: 1px;
+  height: 100px;
+  content: "";
+  background-color: #e0e0e0;
+}
+.li_pic:first-child::after {
+  position: absolute;
+  left: 0;
+  top: 35px;
+  z-index: 1;
+  width: 1px;
+  height: 100px;
+  content: "";
+  background-color: #ffffff;
 }
 .li_pic a {
   text-decoration: none;
 }
 .pic_img {
-  width: 172px;
+  width: 160px;
   height: 110px;
-  border-right: 1px solid  #e0e0e0;
+  margin: 0 10px 16px;
 }
 .li_pic:last-child .pic_img {
   border-right: 0px;
@@ -105,6 +129,9 @@ export default {
   font-size: 12px;
   color: #333333;
   text-align: center;
+}
+.span_pic_name:hover {
+  color: #ff6700;
 }
 .span_pic_price {
   display: block;
